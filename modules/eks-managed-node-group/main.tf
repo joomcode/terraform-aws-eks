@@ -381,13 +381,17 @@ resource "aws_eks_node_group" "this" {
     create_before_destroy = true
     # prevent_destroy       = true
     postcondition {
-      condition     = false
+      condition     = self.status == "FAKE_STATUS"
       error_message = "Node group should not be destroyed yet."
     }
     ignore_changes = [
       scaling_config[0].desired_size,
     ]
   }
+
+  # provisioner "local-exec" {
+  #   command = "sleep 300"
+  # }
 
   tags = merge(
     var.tags,
